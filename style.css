@@ -140,7 +140,7 @@ main {
   margin: 0 auto;
 }
 
-.page { display: none; }
+.page { display: none; padding-bottom: 40px; }
 .page.actif { display: block; animation: apparition 0.22s ease; }
 
 @keyframes apparition {
