@@ -1,0 +1,371 @@
+/* ==========================================================================
+   Gestion Assurance — identité visuelle
+   Thème : document officiel / carte de police d'assurance.
+   Bleu nuit + or (sceau), Fraunces (titres, esprit "acte officiel")
+   + Inter (texte courant, lisibilité mobile).
+   ========================================================================== */
+
+:root {
+  --nuit-900: #0B1B3A;
+  --nuit-800: #122A54;
+  --nuit-700: #1B3A6E;
+  --nuit-600: #26497F;
+
+  --or-600: #B8863E;
+  --or-500: #C9974B;
+  --or-100: #F3E4C8;
+  --or-50:  #FAF2E2;
+
+  --creme-50: #FAF8F3;
+  --papier:   #FFFFFF;
+
+  --encre-900: #1C2333;
+  --encre-600: #5B6478;
+  --encre-400: #8A93A6;
+
+  --ligne: #E7E1D3;
+  --ligne-forte: #D8CFB8;
+
+  --rouge-600: #B23A2E;
+  --rouge-100: #F7E2DE;
+  --ambre-600: #A9720B;
+  --ambre-100: #F6E7C4;
+  --vert-600:  #2F6F4E;
+
+  --rayon: 16px;
+  --rayon-petit: 10px;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--creme-50);
+  color: var(--encre-900);
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  padding-bottom: 84px;
+}
+
+h1, h2, h3, .voix-titre {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+a { color: var(--nuit-700); }
+
+/* --- En-tête : bandeau "sceau officiel" --- */
+header.topbar {
+  background: linear-gradient(180deg, var(--nuit-900) 0%, var(--nuit-800) 100%);
+  color: #F5F1E6;
+  padding: calc(env(safe-area-inset-top, 0px) + 18px) 18px 22px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 3px solid var(--or-500);
+}
+
+.marque {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.marque .sceau {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.marque-texte h1 {
+  margin: 0;
+  font-size: 1.28rem;
+  line-height: 1.1;
+  color: #F5F1E6;
+}
+
+.marque-texte p {
+  margin: 3px 0 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--or-100);
+  font-weight: 500;
+}
+
+/* --- Bandeau de statistiques (page Échéances) --- */
+.stats-bandeau {
+  display: flex;
+  gap: 10px;
+  margin: -6px 0 16px;
+}
+
+.stat-puce {
+  flex: 1;
+  background: var(--papier);
+  border: 1px solid var(--ligne);
+  border-radius: var(--rayon-petit);
+  padding: 10px 12px;
+  text-align: center;
+}
+
+.stat-puce .nombre {
+  font-family: "Fraunces", serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1;
+  display: block;
+}
+
+.stat-puce .libelle {
+  font-size: 0.66rem;
+  color: var(--encre-600);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+  display: block;
+}
+
+.stat-puce.urgent .nombre { color: var(--rouge-600); }
+.stat-puce.bientot .nombre { color: var(--ambre-600); }
+.stat-puce.total .nombre { color: var(--nuit-800); }
+
+main {
+  padding: 16px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.page { display: none; }
+.page.actif { display: block; animation: apparition 0.22s ease; }
+
+@keyframes apparition {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Navigation basse --- */
+nav.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  display: flex;
+  background: var(--papier);
+  border-top: 1px solid var(--ligne);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  z-index: 20;
+}
+
+nav.bottom-nav button {
+  flex: 1;
+  background: none;
+  border: none;
+  text-align: center;
+  padding: 11px 4px 9px;
+  font-size: 0.68rem;
+  color: var(--encre-400);
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+nav.bottom-nav button.actif { color: var(--nuit-800); }
+nav.bottom-nav button.actif .icone { color: var(--or-600); }
+
+nav.bottom-nav .icone {
+  display: block;
+  width: 22px;
+  height: 22px;
+  margin: 0 auto 3px;
+  color: var(--encre-400);
+}
+
+/* --- Boutons --- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--rayon-petit);
+  padding: 13px 18px;
+  font-size: 0.94rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  font-family: "Inter", sans-serif;
+}
+
+.btn-principal { background: var(--nuit-800); color: #F5F1E6; width: 100%; }
+.btn-principal:active { background: var(--nuit-900); }
+.btn-secondaire { background: var(--papier); color: var(--nuit-800); width: 100%; border: 1px solid var(--ligne-forte); }
+.btn-danger { background: var(--rouge-100); color: var(--rouge-600); }
+.btn-petit { padding: 9px 12px; font-size: 0.8rem; border-radius: 9px; }
+
+.rangee-boutons { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.rangee-boutons > * { flex: 1; }
+
+/* --- Champs --- */
+.champ { margin-bottom: 15px; }
+.champ label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--encre-600);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.champ input, .champ select {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid var(--ligne-forte);
+  border-radius: var(--rayon-petit);
+  font-size: 1rem;
+  background: var(--papier);
+  font-family: "Inter", sans-serif;
+  color: var(--encre-900);
+}
+.champ input:focus { outline: none; border-color: var(--nuit-700); box-shadow: 0 0 0 3px rgba(27,58,110,0.12); }
+.champ small { color: var(--encre-400); font-size: 0.76rem; }
+
+.recherche { margin-bottom: 16px; position: relative; }
+.recherche input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  border-radius: 12px;
+  border: 1px solid var(--ligne-forte);
+  font-size: 0.94rem;
+  font-family: "Inter", sans-serif;
+  background: var(--papier);
+}
+.recherche svg {
+  position: absolute;
+  left: 13px; top: 50%;
+  transform: translateY(-50%);
+  width: 17px; height: 17px;
+  color: var(--encre-400);
+}
+
+/* --- Cartes façon police d'assurance, avec sceau de statut --- */
+.carte {
+  background: var(--papier);
+  border-radius: var(--rayon);
+  padding: 16px 16px 14px;
+  margin-bottom: 12px;
+  border: 1px solid var(--ligne);
+  position: relative;
+  overflow: hidden;
+}
+
+.carte::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--ligne-forte);
+}
+.carte.urgent::before { background: var(--rouge-600); }
+.carte.bientot::before { background: var(--ambre-600); }
+
+.carte-titre {
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: 1.08rem;
+  margin-bottom: 6px;
+  padding-right: 64px;
+  color: var(--nuit-900);
+}
+.carte-ligne { font-size: 0.85rem; color: var(--encre-600); margin: 3px 0; }
+.carte-ligne b { color: var(--encre-900); font-weight: 600; }
+
+/* Sceau circulaire de statut, dans le coin, façon tampon */
+.sceau-jours {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  border: 2px dashed var(--ligne-forte);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-6deg);
+  background: var(--creme-50);
+  color: var(--encre-600);
+}
+.sceau-jours .val { font-family: "Fraunces", serif; font-weight: 600; font-size: 1.05rem; line-height: 1; }
+.sceau-jours .unite { font-size: 0.52rem; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 1px; }
+
+.carte.urgent .sceau-jours { border-color: var(--rouge-600); background: var(--rouge-100); color: var(--rouge-600); }
+.carte.bientot .sceau-jours { border-color: var(--ambre-600); background: var(--ambre-100); color: var(--ambre-600); }
+
+#liste-effets, #liste-clients {
+  padding-bottom: 70px;
+}
+
+.carte-actions { margin-top: 12px; display: flex; gap: 8px; }
+.carte-actions > * { flex: 1; }
+
+.fab {
+  position: fixed;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0));
+  right: 18px;
+  width: 58px; height: 58px;
+  border-radius: 50%;
+  background: var(--nuit-800);
+  color: var(--or-100);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 6px 16px rgba(11,27,58,0.28);
+  z-index: 15;
+  border: none;
+}
+.fab svg { width: 24px; height: 24px; }
+
+.flash {
+  background: var(--nuit-800);
+  color: #F5F1E6;
+  padding: 11px 15px;
+  border-radius: var(--rayon-petit);
+  margin-bottom: 16px;
+  font-size: 0.87rem;
+  border-left: 3px solid var(--or-500);
+}
+.flash.erreur { background: var(--rouge-600); border-left-color: #fff; }
+
+.vide {
+  text-align: center;
+  color: var(--encre-600);
+  padding: 54px 18px;
+  font-size: 0.9rem;
+  background: var(--papier);
+  border: 1px dashed var(--ligne-forte);
+  border-radius: var(--rayon);
+}
+.vide svg { width: 40px; height: 40px; color: var(--or-500); margin-bottom: 10px; }
+.vide strong { display: block; font-family: "Fraunces", serif; font-size: 1rem; color: var(--nuit-800); margin-bottom: 4px; font-weight: 600; }
+
+.info-box {
+  background: var(--or-50);
+  border: 1px solid var(--or-100);
+  border-radius: var(--rayon);
+  padding: 15px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 18px;
+  white-space: pre-line;
+  color: var(--encre-900);
+}
+
+.section-titre {
+  font-family: "Fraunces", serif;
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: var(--nuit-800);
+  margin: 24px 0 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--ligne);
+}
