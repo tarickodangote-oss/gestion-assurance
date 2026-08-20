@@ -176,7 +176,7 @@ async function verifierEtEnvoyerAlertes() {
 
   if (aSignaler.length === 0) return { nb: 0, ok: true, err: "" };
 
-  let texte = `⚠️ Échéances à surveiller (${aSignaler.length}) :\n`;
+  let texte = `⚠️ Mansa Assurance — Échéances à surveiller (${aSignaler.length}) :\n`;
   for (const e of aSignaler) {
     texte += `\n- ${e.nomClient} | ${e.marque || ""} ${e.matricule || ""} | N° ${e.numero || ""} | échéance : ${e.echeance}`;
   }
@@ -234,6 +234,20 @@ function escapeHtml(str) {
    ========================================================================== */
 
 let rechercheEffets = "";
+let filtreStatut = null; // null = tous, "urgent", "bientot"
+
+function calculerStatut(e, seuil) {
+  const jr = joursRestants(e.echeance);
+  if (jr === null) return "normal";
+  if (jr <= seuil) return "urgent";
+  if (jr <= seuil * 5) return "bientot";
+  return "normal";
+}
+
+function basculerFiltreStatut(statut) {
+  filtreStatut = (filtreStatut === statut) ? null : statut;
+  rafraichirEffets();
+}
 
 async function rafraichirEffets() {
   const conteneur = document.getElementById("liste-effets");
@@ -243,34 +257,48 @@ async function rafraichirEffets() {
 
   let nbUrgent = 0, nbBientot = 0;
   for (const e of tousEffets) {
-    const jr = joursRestants(e.echeance);
-    if (jr === null) continue;
-    if (jr <= seuil) nbUrgent++;
-    else if (jr <= seuil * 5) nbBientot++;
+    const s = calculerStatut(e, seuil);
+    if (s === "urgent") nbUrgent++;
+    else if (s === "bientot") nbBientot++;
   }
 
+  const estActif = (cle) => filtreStatut === cle ? "actif" : "";
   bandeau.innerHTML = `
-    <div class="stat-puce total"><span class="nombre">${tousEffets.length}</span><span class="libelle">Effets</span></div>
-    <div class="stat-puce bientot"><span class="nombre">${nbBientot}</span><span class="libelle">Bientôt</span></div>
-    <div class="stat-puce urgent"><span class="nombre">${nbUrgent}</span><span class="libelle">Urgent</span></div>
+    <button class="stat-puce total ${estActif(null)}" onclick="basculerFiltreStatut(null)">
+      <span class="nombre">${tousEffets.length}</span><span class="libelle">Effets</span>
+    </button>
+    <button class="stat-puce bientot ${estActif('bientot')}" onclick="basculerFiltreStatut('bientot')">
+      <span class="nombre">${nbBientot}</span><span class="libelle">Bientôt</span>
+    </button>
+    <button class="stat-puce urgent ${estActif('urgent')}" onclick="basculerFiltreStatut('urgent')">
+      <span class="nombre">${nbUrgent}</span><span class="libelle">Urgent</span>
+    </button>
   `;
 
   const filtres = tousEffets
     .filter(e => {
       const r = rechercheEffets.toLowerCase();
-      if (!r) return true;
-      return (e.nomClient || "").toLowerCase().includes(r) ||
+      const okRecherche = !r ||
+             (e.nomClient || "").toLowerCase().includes(r) ||
              (e.matricule || "").toLowerCase().includes(r) ||
              (e.numero || "").toLowerCase().includes(r);
+      if (!okRecherche) return false;
+
+      if (filtreStatut === null) return true;
+      return calculerStatut(e, seuil) === filtreStatut;
     })
     .sort((a, b) => b.id - a.id);
 
   if (filtres.length === 0) {
+    const libelles = { urgent: "urgent", bientot: "à surveiller bientôt" };
+    const texteVide = filtreStatut
+      ? `Aucun effet ${libelles[filtreStatut]} pour le moment.`
+      : "Ajoute un client pour qu'il apparaisse ici avec sa date d'échéance.";
     conteneur.innerHTML = `
       <div class="vide">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
-        <strong>Aucun effet enregistré</strong>
-        Ajoute un client pour qu'il apparaisse ici avec sa date d'échéance.
+        <strong>Aucun effet</strong>
+        ${texteVide}
       </div>`;
     return;
   }
@@ -475,7 +503,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const phone = await getConfig("whatsapp_phone");
     const apikey = await getConfig("callmebot_apikey");
     if (!phone || !apikey) { flash("Renseigne d'abord ton numéro et ta clé API.", true); return; }
-    const ok = await envoyerWhatsapp(phone, apikey, "Ceci est un message test de ton programme de gestion assurance.");
+    const ok = await envoyerWhatsapp(phone, apikey, "Ceci est un message test de Mansa Assurance.");
     flash(ok ? "Message test envoyé (vérifie ton WhatsApp)." : "Échec de l'envoi — vérifie ta connexion internet.", !ok);
   });
 
