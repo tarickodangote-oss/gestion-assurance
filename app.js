@@ -287,7 +287,15 @@ async function rafraichirEffets() {
       if (filtreStatut === null) return true;
       return calculerStatut(e, seuil) === filtreStatut;
     })
-    .sort((a, b) => b.id - a.id);
+    .sort((a, b) => {
+      const jrA = joursRestants(a.echeance);
+      const jrB = joursRestants(b.echeance);
+      // Les effets sans échéance valide vont à la fin
+      if (jrA === null && jrB === null) return b.id - a.id;
+      if (jrA === null) return 1;
+      if (jrB === null) return -1;
+      return jrA - jrB;
+    });
 
   if (filtres.length === 0) {
     const libelles = { urgent: "urgent", bientot: "à surveiller bientôt" };

@@ -1,4 +1,4 @@
-const CACHE_NAME = "assurance-cache-v1";
+const CACHE_NAME = "mansa-assurance-cache-v2";
 const FICHIERS = [
   "./index.html",
   "./style.css",
